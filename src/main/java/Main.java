@@ -7,7 +7,7 @@ public class Main {
         System.out.println("Im just a dummy springboot(ish) application");
         MyApplicationContext context = new MyApplicationContext();
 
-        context.scanAndInitializeBeans("org.org.example.services");
+        context.scanAndInitializeBeans("org.example.services");
 
         DummyService myService = (DummyService) context.getBean("dummyService");
         myService.doSomething();
