@@ -3,7 +3,7 @@ This project is a lightweight implementation of an IoC container, inspired by th
 
 ## Features
 - [X] Component Scanning: Automatically scans a specified package for classes annotated with @Component and registers them as beans.
-- [ ] Dependency Injection: Automatically injects dependencies using the @Autowired annotation.
+- [X] Dependency Injection: Automatically injects dependencies using the @Autowired annotation.
 - [ ] Bean Lifecycle Management: Supports @PostConstruct and @PreDestroy annotations for bean initialization and destruction.
 - [ ] Add support for constructor injection
 - [ ] Add support for bean scopes (e.g., singleton, prototype)

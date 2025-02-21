@@ -59,9 +59,11 @@ public class MyApplicationContext {
         for (Object bean : beans.values()) {
             for (Field field : bean.getClass().getDeclaredFields()) {
                 if (field.isAnnotationPresent(Autowired.class)) {
-                    Object dependency = beans.get(field.getType().getSimpleName());
+                    String simpleName = field.getType().getSimpleName();
+                    String beanName = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+                    Object dependency = beans.get(beanName);
                     if (dependency == null) {
-                        throw new RuntimeException("Dependency not found: " + field.getType().getSimpleName());
+                        throw new RuntimeException("Dependency not found: " + beanName);
                     }
                     field.setAccessible(true);
                     field.set(bean, dependency);
