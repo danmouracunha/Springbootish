@@ -7,9 +7,10 @@ import org.example.annotations.PreDestroy;
 
 @Component
 public class DummyService {
+    private final EvenDumierService evenDumierService;
 
-    @Autowired
-    private EvenDumierService evenDumierService;
+    public DummyService(EvenDumierService evenDumierService) {this.evenDumierService = evenDumierService;}
+
 
     @PostConstruct
     public void init() {

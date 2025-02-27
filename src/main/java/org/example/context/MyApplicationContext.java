@@ -10,9 +10,11 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +38,7 @@ public class MyApplicationContext {
 
         for (Class<?> clazz : componentClasses) {
             String beanName = getBeanName(clazz);
-            Object bean = clazz.getDeclaredConstructor().newInstance();
+            Object bean = createBeanWithConstructor(clazz);
             registerBean(beanName, bean);
         }
 
@@ -70,6 +72,38 @@ public class MyApplicationContext {
                 }
             }
         }
+    }
+
+    private Object createBeanWithConstructor(Class<?> clazz) throws Exception {
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        if (constructors.length == 1) {
+            Constructor<?> constructor = constructors[0];
+            Class<?>[] paramTypes = constructor.getParameterTypes();
+            Object[] params = new Object[paramTypes.length];
+
+            for (int i = 0; i < paramTypes.length; i++) {
+                params[i] = getBeanByType(paramTypes[i]);
+            }
+
+            constructor.setAccessible(true);
+            return constructor.newInstance(params);
+        } else {
+            throw new RuntimeException("No unique constructor found for class: " + clazz.getName());
+        }
+    }
+
+    private Object getBeanByType(Class<?> type) {
+        List<Object> candidates = beans.values().stream()
+                .filter(bean -> type.isAssignableFrom(bean.getClass()))
+                .toList();
+
+        if (candidates.isEmpty()) {
+            throw new RuntimeException("No bean found for type: " + type.getName());
+        } else if (candidates.size() > 1) {
+            throw new RuntimeException("Multiple beans found for type: " + type.getName());
+        }
+
+        return candidates.get(0);
     }
 
     private void invokePostConstructMethods() throws Exception {

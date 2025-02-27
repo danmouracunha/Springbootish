@@ -2,7 +2,9 @@ package org.example.beans;
 
 import org.example.annotations.Autowired;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class DependencyInjector {
     private BeanFactory beanFactory;
